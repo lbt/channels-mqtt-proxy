@@ -1,17 +1,3 @@
-This is a small revision of original channels-mqtt-proxy 
-
-Add MQTT over TLS support.
-
-to use this version, you need to add following items in Django project setting:
-
-MQTT_TLS = True
-MQTT_CA = 'app/certs/ca.crt'
-MQTT_CERT = 'app/certs/client1.crt'
-MQTT_KEY = 'app/certs/client1.key'
-MQTT_HOST = "A.B.C.D"
-
-
-
 # channels-mqtt-proxy
 
 A Channels 3 compatible MQTT worker
@@ -207,6 +193,15 @@ subscribed to the topic, you will receive it too.
 If you make changes to the code note that the Channels runworker does
 not auto-reload and will still hold old subscribe/group information.
 
+## MQTT over TLS support.
+
+add the following items in Django project settings.py:
+
+MQTT_TLS = True
+MQTT_CA = 'app/certs/ca.crt'
+MQTT_CERT = 'app/certs/client1.crt'
+MQTT_KEY = 'app/certs/client1.key'
+MQTT_HOST = "A.B.C.D"
 
 # TODO/Issues
 
