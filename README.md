@@ -5,7 +5,7 @@ Installation:
 pip install chanmqttsproxy
 
 In Django settings.py , specify the credentials or certs , simillar as following example.
-
+<pre>
 # Local mqtt settings
 MQTT_TLS = True
 MQTT_CA = 'iotwebcore/certs/ca.crt'
@@ -15,6 +15,7 @@ MQTT_HOST = "52.80.119.72"
 #MQTT_USER = "mqtt-test"
 #MQTT_PASSWORD = "mqtt-test"
 MQTT_VERSION = 311  # defaults to 50
+</pre>
+other general usage just the same  
 
-other general usage just the same
-view original channels-mqtt-proxy(https://github.com/lbt/channels-mqtt-proxy) for more information.
+view original [channels-mqtt-proxy](https://github.com/lbt/channels-mqtt-proxy) for more information.
