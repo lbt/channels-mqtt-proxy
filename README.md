@@ -1,3 +1,13 @@
+This is a small modification version of original channels-mqtt-proxy.
+
+This version can support MQTTS and others just remain the same.
+
+to install : pip install chanmqttsproxy
+
+
+
+# The following are from original README.md
+
 # channels-mqtt-proxy
 
 A Channels 3 compatible MQTT worker
