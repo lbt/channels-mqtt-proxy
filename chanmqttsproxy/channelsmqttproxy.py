@@ -5,6 +5,7 @@ import logging
 import os
 import signal
 import socket
+import ssl
 
 from gmqtt import Client as MQTTClient
 from gmqtt.mqtt.constants import MQTTv311, MQTTv50
@@ -18,11 +19,24 @@ class ChannelsMQTTProxy:
 
         # MQTTClient takes an identifier which is seen at the broker
         # Creating the client does not connect.
-        self.mqtt = MQTTClient(
-            f"ChannelsMQTTProxy@{socket.gethostname()}.{os.getpid()}")
-        self.mqtt.set_auth_credentials(username=settings.MQTT_USER,
-                                       password=settings.MQTT_PASSWORD)
-        self.mqtt_host = settings.MQTT_HOST
+        self.mqtt = MQTTClient(f"ChannelsMQTTProxy@{socket.gethostname()}.{os.getpid()}")
+
+        if settings.MQTT_TLS == True:
+            self.ssl_ctx = ssl.SSLContext(ssl.PROTOCOL_TLS)
+            self.ssl_ctx.load_cert_chain(settings.MQTT_CERT, settings.MQTT_KEY)
+            self.ssl_ctx.load_verify_locations(settings.MQTT_CA)
+            # because we used a self-signed cert, we need to switch off 
+            # checking of host name
+            self.ssl_ctx.verify_mode = ssl.CERT_REQUIRED
+            self.ssl_ctx.check_hostname = False
+            self.mqtt_port = 8883
+            self.mqtt_host = settings.MQTT_HOST
+            #await client.connect('localhost', 8883, ssl=ssl_ctx)
+        else:
+            self.ssl_ctx = False
+            self.mqtt.set_auth_credentia9ls(username=settings.MQTT_USER,password=settings.MQTT_PASSWORD)
+            self.mqtt_port = 1883
+            self.mqtt_host = settings.MQTT_HOST
         try:
             self.mqtt_version = settings.MQTT_VERSION
         except AttributeError:
@@ -67,7 +81,8 @@ class ChannelsMQTTProxy:
 
         while not self.mqtt.is_connected:
             try:
-                await self.mqtt.connect(self.mqtt_host, version=version)
+                #await self.mqtt.connect(self.mqtt_host, version=version)
+                await self.mqtt.connect(self.mqtt_host,self.mqtt_port,ssl=self.ssl_ctx, version=version)
             except Exception as e:
                 LOGGER.warn(f"Error trying to connect: {e}. Retrying.")
                 await asyncio.sleep(1)
