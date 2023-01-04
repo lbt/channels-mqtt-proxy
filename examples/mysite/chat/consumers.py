@@ -1,6 +1,9 @@
 # chat/consumers.py
 import json
+import logging
 from channels.generic.websocket import AsyncWebsocketConsumer
+
+LOGGER = logging.getLogger(__name__)
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -73,8 +76,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     # Receive message from mqtt group and send to websocket
     async def mqtt_message(self, event):
+        LOGGER.debug(f"Got mqtt event, send to websocket. Event: {event}")
         message = event['message']
-        topic = message["topic"]
         payload = message["payload"]
 
         # Send message to WebSocket
