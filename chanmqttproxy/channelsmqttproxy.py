@@ -44,13 +44,9 @@ class ChannelsMQTTProxy:
         self.subscriptions = {}
 
     async def run(self):
-        """This connects to the mqtt broker (retrying forever), then calls the
-        overrideable :func:`setup()` method finally awaits
-        :func:`ask_exit` is called at which point it exits cleanly.
-        Alternatively you can call :func:`connect()` and then wait for
-        :func:`finish()` Once connected the underlying qmqtt client
-        will re-connect if the connection is lost.
-
+        """This connects to the mqtt broker (retrying forever) and then waits
+        for :func:`finish()` Once connected the underlying qmqtt
+        client will re-connect if the connection is lost.
         """
         loop = asyncio.get_event_loop()
         loop.add_signal_handler(signal.SIGINT, self.ask_exit)
