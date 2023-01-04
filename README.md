@@ -1,6 +1,6 @@
 # channels-mqtt-proxy
 
-A Channels 3 compatible MQTT worker
+A Channels 3/4 compatible MQTT worker
 
 This worker is a standard Channels Consumer which contains a
 fully async MQTT server allowing channels messages to be used to
@@ -23,6 +23,7 @@ MQTT <> Channels-MQTT-Proxy (in runworker) <> Redis/Channels-layer <> ASGI appli
 ```bash
 pip install chanmqttproxy
 ```
+
 ## Usage
 
 In Channels the asgi application handles all types of connection
@@ -48,7 +49,7 @@ In `site/asgi.py`:
 
 ```python
 	from chanmqttproxy import MqttConsumer
-	from channels.routing import ChannelNameRouter
+	from channels.routing import ChannelNameRouter, ProtocolTypeRouter
 	
 	application = ProtocolTypeRouter({
 		"channel": ChannelNameRouter({
@@ -175,6 +176,17 @@ https://github.com/lbt/channels-mqtt-proxy/tree/main/examples
 
 ## Usage
 
+Enter the `examples/` directory.
+
+You'll need a Redis instance for Channels to work sensibly and an MQTT
+broker like mosquitto of course.
+
+Setup Django/channels etc in your venv by running:
+
+```
+pip install ..[examples]
+```
+
 Now run both of these (in different consoles)
 
 ```
@@ -185,8 +197,9 @@ Now run both of these (in different consoles)
 Use your mqtt listener to listen to the topic `chat/lobby_out` and
 publish to the topic `chat/lobby`
 
-Notice that if you use chat/<room> for both topics then when the proxy
-client publishes to the MQTT topic the message appears twice. This is
+Notice that if we had just used chat/<room> for both topics then when
+the chat room sends a message and the proxy client publishes it to
+the MQTT topic the message would appear twice in the room. This is
 because even if you're the one that publishes a message, if you're
 subscribed to the topic, you will receive it too.
 
