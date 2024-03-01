@@ -38,6 +38,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
+        # Leave mqtt group
+        await self.channel_layer.group_discard(
+            "mqttgroup",
+            self.channel_name
+        )
 
     # Receive message from WebSocket
     async def receive(self, text_data):
