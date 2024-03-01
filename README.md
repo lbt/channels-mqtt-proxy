@@ -174,7 +174,9 @@ The complete code for the Channels Chat tutorial application (up to
 part 3) with the channels-mqtt-proxy additions is here:
 https://github.com/lbt/channels-mqtt-proxy/tree/main/examples
 
-## Usage
+## Example Usage
+
+Create and activate a suitable venv.
 
 Enter the `examples/` directory.
 
@@ -187,12 +189,16 @@ Setup Django/channels etc in your venv by running:
 pip install ..[examples]
 ```
 
-Now run both of these (in different consoles)
+Then edit `mysite/mysite/settings.py` to point to your mqtt server and run;
 
+
+```python
+python3 mysite/manage.py migrate
+python3 mysite/manage.py runworker mqtt &
+python3 mysite/manage.py runserver
 ```
-./manage.py runserver
-./manage.py runworker mqtt
-```
+
+Navigate to http://127.0.0.1:8000/chat/ and use "lobby" for the room.
 
 Use your mqtt listener to listen to the topic `chat/lobby_out` and
 publish to the topic `chat/lobby`
