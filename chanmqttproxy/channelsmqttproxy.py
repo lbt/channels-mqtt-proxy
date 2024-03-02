@@ -26,7 +26,7 @@ class ChannelsMQTTProxy:
         try:
             self.mqtt_version = settings.MQTT_VERSION
         except AttributeError:
-            self.mqtt_version = None
+            self.mqtt_version = 50
         # Hook up the callbacks and some lifecycle management events
         self.mqtt.on_connect = self._on_connect
         self.mqtt.on_disconnect = self._on_disconnect
