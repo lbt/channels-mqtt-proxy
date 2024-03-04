@@ -16,21 +16,6 @@ LOGGER = logging.getLogger(__name__)
 
 class ChannelsMQTTProxy:
     @staticmethod
-    def strtobool(val):
-        """
-        FROM: https://stackoverflow.com/a/18472142
-        Convert a string representation of truth to true (1) or false (0).
-        True values are 'y', 'yes', 't', 'true', 'on', and '1'; false values
-        are 'n', 'no', 'f', 'false', 'off', and '0'.  Raises ValueError if
-        'val' is anything else.
-        """
-        val = val.lower()
-        if val in ('y', 'yes', 't', 'true', 'on', '1'):
-            return True
-        elif val in ('n', 'no', 'f', 'false', 'off', '0'):
-            return False
-        else:
-            raise ValueError("invalid truth value %r" % (val,))
 
     def __init__(self, channel_layer, settings):
         self.channel_layer = channel_layer
@@ -47,13 +32,13 @@ class ChannelsMQTTProxy:
             pass
         self.mqtt_host = settings.MQTT_HOST
         try:
-            self.mqtt_port = int(settings.MQTT_PORT)
+            self.mqtt_port = settings.MQTT_PORT
         except AttributeError:
             # Setting not defined. Use default unsecured.
             self.mqtt_port = 1883
         # Set ssl
         try:
-            self.mqtt_usessl = self.strtobool(settings.MQTT_USE_SSL)
+            self.mqtt_usessl = settings.MQTT_USE_SSL
         except AttributeError:
             # Setting is not defined. Assume false
             self.mqtt_usessl = False
@@ -63,8 +48,7 @@ class ChannelsMQTTProxy:
             self.mqtt_ssl_cert = settings.MQTT_SSL_CERT
             self.mqtt_ssl_key = settings.MQTT_SSL_KEY
             try:
-                self.mqtt_ssl_verify = \
-                    self.strtobool(settings.MQTT_SSL_VERIFY)
+                self.mqtt_ssl_verify = settings.MQTT_SSL_VERIFY
             except AttributeError:
                 # Assume True on error
                 self.mqtt_ssl_verify = True
