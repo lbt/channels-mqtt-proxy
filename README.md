@@ -186,15 +186,17 @@ MQTT_PASSWORD = "mqtt-test"
 MQTT_VERSION = 311  # defaults to 50
 
 # TLS settings
-MQTT_PORT = 8883       # mqtts port
-MQTT_USE_SSL = True    # Enable ssl connection
-## Stop here if your certificate has been properly signed.
+MQTT_USE_SSL = True    # enable ssl connection (bool)
+MQTT_PORT = 8883       # override the port to connect to (int)
+## Stop here if your server certificate has been properly signed.
 
-## Settings for self-signed certificates
-MQTT_SSL_CA = ca.crt
-MQTT_SSL_CERT = client.crt
-MQTT_SSL_KEY = client.key
-MQTT_SSL_VERIFY = False
+## Optional
+## Settings to connect to a server with self-signed certificates
+MQTT_SSL_VERIFY = False                  # set to False to connect to a server
+                                         # with a self signed certificate
+MQTT_SSL_CA = "<path to ca.crt>"         # ca file from server
+MQTT_SSL_CERT = "<path to client.crt>"   # client specific cert file
+MQTT_SSL_KEY = "<path to client.key>"    # client specific key file
 ```
 
 ## Usage
