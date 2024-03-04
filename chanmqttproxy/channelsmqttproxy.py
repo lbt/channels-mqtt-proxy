@@ -15,8 +15,6 @@ LOGGER = logging.getLogger(__name__)
 
 
 class ChannelsMQTTProxy:
-    @staticmethod
-
     def __init__(self, channel_layer, settings):
         self.channel_layer = channel_layer
 
@@ -103,16 +101,18 @@ class ChannelsMQTTProxy:
 
         while not self.mqtt.is_connected:
             try:
-                LOGGER.debug((f'Connecting to mqtt'
-                              f'{"s" if self.mqtt_usessl else ""}'
-                              f'://{self.mqtt_host}:{self.mqtt_port} '
-                              f'using v{self.mqtt_version}'))
+                LOGGER.debug('Connecting to mqtt%s://%s:%s using v%s',
+                             "s" if self.mqtt_usessl else "",
+                             self.mqtt_host,
+                             self.mqtt_port,
+                             self.mqtt_version)
                 use_ssl = self.mqtt_usessl
                 if (self.mqtt_usessl) and (self.mqtt_ssl_ca is not None):
-                    LOGGER.debug((f'Using CA: {self.mqtt_ssl_ca}'
-                                  f' Cert: {self.mqtt_ssl_cert}'
-                                  f' Key: {self.mqtt_ssl_key}'
-                                  f' Verify: {self.mqtt_ssl_verify}'))
+                    LOGGER.debug('Using CA: %s Cert: %s Key: %s Verify: %s',
+                                 self.mqtt_ssl_ca,
+                                 self.mqtt_ssl_cert,
+                                 self.mqtt_ssl_key,
+                                 self.mqtt_ssl_verify)
                     try:
                         use_ssl = ssl.create_default_context(
                             ssl.Purpose.SERVER_AUTH,
@@ -125,9 +125,8 @@ class ChannelsMQTTProxy:
                         use_ssl.load_cert_chain(
                             certfile=self.mqtt_ssl_cert,
                             keyfile=self.mqtt_ssl_key)
-                    except Exception as e:
-                        LOGGER.warn(f'Error initialising ssl: '
-                                    f'{e}. Retrying.')
+                    except ssl.SSLError as e:
+                        LOGGER.error('Error initialising ssl: %s. Retrying.',e)
                         await asyncio.sleep(1)
                         continue
                 await self.mqtt.connect(
@@ -138,7 +137,7 @@ class ChannelsMQTTProxy:
             except MQTTConnectError as e:
                 # Mqtt server returned an error.
                 # Back off as to not spam the server
-                LOGGER.warn(f"MQTT Error trying to connect: {e}. Retrying.")
+                LOGGER.info('MQTT Error trying to connect: %s. Retrying.',e)
                 # Close the connection since it is running and gmqtt will
                 # still retry to complete the connection.
                 await self.mqtt.disconnect()
