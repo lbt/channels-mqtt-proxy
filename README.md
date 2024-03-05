@@ -174,6 +174,31 @@ The complete code for the Channels Chat tutorial application (up to
 part 3) with the channels-mqtt-proxy additions is here:
 https://github.com/lbt/channels-mqtt-proxy/tree/main/examples
 
+### Secure connections
+
+Additional settings in `site/settings.py` to connect to a MQTT broker with a secure connection:
+
+```python
+# Local mqtt settings
+MQTT_HOST = "mqtt.example.com"
+MQTT_USER = "mqtt-test"
+MQTT_PASSWORD = "mqtt-test"
+MQTT_VERSION = 311  # defaults to 50
+
+# TLS settings
+MQTT_USE_SSL = True    # enable ssl connection (bool)
+MQTT_PORT = 8883       # override the port to connect to (int)
+## Stop here if your server certificate has been properly signed.
+
+## Optional
+## Settings to connect to a server with self-signed certificates
+MQTT_SSL_VERIFY = False                  # set to False to connect to a server
+                                         # with a self signed certificate
+MQTT_SSL_CA = "<path to ca.crt>"         # ca file from server
+MQTT_SSL_CERT = "<path to client.crt>"   # client specific cert file
+MQTT_SSL_KEY = "<path to client.key>"    # client specific key file
+```
+
 ## Example Usage
 
 Create and activate a suitable venv.
