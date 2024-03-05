@@ -38,15 +38,16 @@ CHANNEL_LAYERS = {
     },
 }
 # Local mqtt settings
-MQTT_HOST = "mqtt.example.com"
+MQTT_HOST = "mqtt"
 MQTT_USER = "mqtt-test"
 MQTT_PASSWORD = "mqtt-test"
 #MQTT_VERSION = 311  # defaults to 50
 # Application definition
 
 INSTALLED_APPS = [
-    'channels',
     'chat',
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

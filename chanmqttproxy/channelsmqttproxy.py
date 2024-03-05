@@ -60,7 +60,7 @@ class ChannelsMQTTProxy:
         try:
             self.mqtt_version = settings.MQTT_VERSION
         except AttributeError:
-            self.mqtt_version = None
+            self.mqtt_version = 50
         # Hook up the callbacks and some lifecycle management events
         self.mqtt.on_connect = self._on_connect
         self.mqtt.on_disconnect = self._on_disconnect
@@ -78,13 +78,9 @@ class ChannelsMQTTProxy:
         self.subscriptions = {}
 
     async def run(self):
-        """This connects to the mqtt broker (retrying forever), then calls the
-        overrideable :func:`setup()` method finally awaits
-        :func:`ask_exit` is called at which point it exits cleanly.
-        Alternatively you can call :func:`connect()` and then wait for
-        :func:`finish()` Once connected the underlying qmqtt client
-        will re-connect if the connection is lost.
-
+        """This connects to the mqtt broker (retrying forever) and then waits
+        for :func:`finish()` Once connected the underlying qmqtt
+        client will re-connect if the connection is lost.
         """
         loop = asyncio.get_event_loop()
         loop.add_signal_handler(signal.SIGINT, self.ask_exit)

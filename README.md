@@ -1,6 +1,6 @@
 # channels-mqtt-proxy
 
-A Channels 3 compatible MQTT worker
+A Channels 3/4 compatible MQTT worker
 
 This worker is a standard Channels Consumer which contains a
 fully async MQTT server allowing channels messages to be used to
@@ -23,6 +23,7 @@ MQTT <> Channels-MQTT-Proxy (in runworker) <> Redis/Channels-layer <> ASGI appli
 ```bash
 pip install chanmqttproxy
 ```
+
 ## Usage
 
 In Channels the asgi application handles all types of connection
@@ -48,7 +49,7 @@ In `site/asgi.py`:
 
 ```python
 	from chanmqttproxy import MqttConsumer
-	from channels.routing import ChannelNameRouter
+	from channels.routing import ChannelNameRouter, ProtocolTypeRouter
 	
 	application = ProtocolTypeRouter({
 		"channel": ChannelNameRouter({
@@ -173,7 +174,6 @@ The complete code for the Channels Chat tutorial application (up to
 part 3) with the channels-mqtt-proxy additions is here:
 https://github.com/lbt/channels-mqtt-proxy/tree/main/examples
 
-
 ### Secure connections
 
 Additional settings in `site/settings.py` to connect to a MQTT broker with a secure connection:
@@ -199,20 +199,38 @@ MQTT_SSL_CERT = "<path to client.crt>"   # client specific cert file
 MQTT_SSL_KEY = "<path to client.key>"    # client specific key file
 ```
 
-## Usage
+## Example Usage
 
-Now run both of these (in different consoles)
+Create and activate a suitable venv.
+
+Enter the `examples/` directory.
+
+You'll need a Redis instance for Channels to work sensibly and an MQTT
+broker like mosquitto of course.
+
+Setup Django/channels etc in your venv by running:
 
 ```
-./manage.py runserver
-./manage.py runworker mqtt
+pip install ..[examples]
 ```
+
+Then edit `mysite/mysite/settings.py` to point to your mqtt server and run;
+
+
+```python
+python3 mysite/manage.py migrate
+python3 mysite/manage.py runworker mqtt &
+python3 mysite/manage.py runserver
+```
+
+Navigate to http://127.0.0.1:8000/chat/ and use "lobby" for the room.
 
 Use your mqtt listener to listen to the topic `chat/lobby_out` and
 publish to the topic `chat/lobby`
 
-Notice that if you use chat/<room> for both topics then when the proxy
-client publishes to the MQTT topic the message appears twice. This is
+Notice that if we had just used chat/<room> for both topics then when
+the chat room sends a message and the proxy client publishes it to
+the MQTT topic the message would appear twice in the room. This is
 because even if you're the one that publishes a message, if you're
 subscribed to the topic, you will receive it too.
 
